@@ -4,17 +4,32 @@ using System.Collections;
 using Ink.Runtime;
 
 // This is a super bare bones example of how to play and display a ink story in Unity.
-public class BasicInkExample : MonoBehaviour {
+public class BasicInkExample : MonoBehaviour
+{
+	//private Text m_Text;
+	//private RectTransform m_RectTransform;
+	public BackgroundManager BGManager;
+	
 	
 	void Awake () {
 		// Remove the default message
 		RemoveChildren();
 		StartStory();
+		
+		
+		//m_Text = GetComponent<Text>();
+		//m_RectTransform = GetComponent<RectTransform>();
+		
 	}
 
 	// Creates a new Story object with the compiled story which we can then play!
 	void StartStory () {
 		story = new Story (inkJSONAsset.text);
+		
+		
+		//m_Text.fontSize = 10;
+		
+		
 		RefreshView();
 	}
 	
@@ -22,6 +37,10 @@ public class BasicInkExample : MonoBehaviour {
 	// Destroys all the old content and choices.
 	// Continues over all the lines of text, then displays all the choices. If there are no choices, the story is finished!
 	void RefreshView () {
+		
+		
+		
+		
 		// Remove all the UI on screen
 		RemoveChildren ();
 		
@@ -29,14 +48,20 @@ public class BasicInkExample : MonoBehaviour {
 		while (story.canContinue) {
 			// Continue gets the next line of the story
 			string text = story.Continue ();
+
+			if (story.currentTags.Count > 0)
+			{
+				BGManager.TagReader(story.currentTags);
+			}
 			// This removes any white space from the text.
 			text = text.Trim();
+			
 			// Display the text on screen!
 			CreateContentView(text);
 		}
 
 		// Display all the choices, if there are any!
-		if(story.currentChoices.Count > 0) {
+		 if(story.currentChoices.Count > 0) {
 			for (int i = 0; i < story.currentChoices.Count; i++) {
 				Choice choice = story.currentChoices [i];
 				Button button = CreateChoiceView (choice.text.Trim ());
